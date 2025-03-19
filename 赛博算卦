@@ -1,0 +1,51 @@
+import random
+#取55根蓍草（55为天地之数），拿掉其中6根，将剩下49根随机分成两份，分别模4得到余数，相加再加1得到一变
+#49减去一变得到的数代入重复这个过程，称为二变，类推得到三变，三变得到的数除以4，得到一爻，即三变得一爻
+def yarrow_method():
+    n=55-5-1
+    for _ in range(3):
+        a=random.randint(1,n-1)
+        b=n-a
+        b-=1
+        r1=a%4 or 4
+        r2=b%4 or 4
+        n=n-1-(r1+r2)
+    return n//4
+    
+#六爻得一卦，6/7/8/9分别代表老阴/少阳/少阴/老阳
+def generate_hexagram():
+    hexagram=[]
+    for _ in range(6):
+        num=yarrow_method()
+        if num==6:
+            hexagram.append("--老阴")
+        elif num==7:
+            hexagram.append("—少阳")
+        elif num==8:
+            hexagram.append("--少阴")
+        elif num==9:
+            hexagram.append("—老阳")
+    return hexagram
+    
+#根据六爻得到的本卦推出变卦（老阴变阳，老阳变阴）
+def generate_changed_hexagram(original):
+    changed=[]
+    for yao in original:
+        if "--老阴" in yao:
+            changed.append("—变阳")
+        elif "—老阳" in yao:
+            changed.append("--变阴")
+        else:
+            changed.append(yao)
+    return changed
+
+ben_gua=generate_hexagram()
+bian_gua=generate_changed_hexagram(ben_gua)
+
+#倒序输出本卦和变卦，符合周易习惯
+print("本卦：")
+for yao in reversed(ben_gua):
+    print(yao)    
+print("变卦：")
+for yao in reversed(bian_gua):
+    print(yao)
